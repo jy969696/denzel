@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 var populate = require('../fetchData')
 
-mongoose.connect('mongodb://47.52.162.192:27017/denzel', {useNewUrlParser: true});
+mongoose.connect('mongodb://47.52.162.192:27017/denzel', { useNewUrlParser: true });
 
 const con = mongoose.connection;
 con.on('error', console.error.bind(console, '连接数据库失败'));
@@ -41,19 +41,22 @@ module.exports = {
         })
     },
     mustWatch() {
-        return Movie.find({metascore: {$gt: 70}})
+        return Movie.find({ metascore: { $gt: 70 } }).then(data => {
+            const index = Math.floor((Math.random() * data.length))
+            return data[index]
+        })
     },
-    search({limit = 5, metascore = 0}) {
-        return Movie.find({metascore: {$gt: metascore}}).then(data => {
+    search({ limit = 5, metascore = 0 }) {
+        return Movie.find({ metascore: { $gt: metascore } }).then(data => {
             data.length = limit
             return data
         })
     },
     specific(id) {
-        return Movie.findOne({id})
+        return Movie.findOne({ id })
     },
-    saveWatched({id, date, review}) {
-        return Movie.findOneAndUpdate({id}, {date, review}).then(data => {
+    saveWatched({ id, date, review }) {
+        return Movie.findOneAndUpdate({ id }, { date, review }).then(data => {
             return {
                 _id: data._id
             }
